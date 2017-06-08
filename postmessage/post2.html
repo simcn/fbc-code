@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        .sendbox{
+            background: #ccc;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="sendbox" style="text-align: right;">
+    <button id="sendbox">中转到左边</button>
+    <button id="sendbox2">直接到左边</button>
+    右边的iframe
+</div>
+<div id="box"></div>
+
+<script>
+    document.getElementById('sendbox').addEventListener('click', function(){
+        /*- 向父级页面传 -*/
+        window.parent.postMessage('来自post2的消息' + +new Date(),'*');
+    });
+    document.getElementById('sendbox2').addEventListener('click', function(){
+        window.parent.post1.postMessage('直接来自右边' + +new Date(),'*');
+    });
+    function addbox(html){
+        var item = document.createElement('div');
+        item.innerHTML = html;
+        document.getElementById('box').append(item);
+    }
+    window.addEventListener('message',function(e){
+        if(e.data){
+            addbox(e.data);
+        }
+    },false);
+</script>
+
+</body>
+</html>

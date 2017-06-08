@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+<div id="box"></div>
+<script>
+    var source = new EventSource('./server2.php');
+
+    source.addEventListener('ping', function(e){
+        console.log('e', JSON.parse( e.data));
+        document.getElementById('box').innerHTML += "ping1 notification: " + e.data + '<br />';
+    }, false);
+
+    source.addEventListener('ping2', function(e){
+        console.log('e', JSON.parse( e.data));
+        document.getElementById('box').innerHTML += "ping2 notification: " + e.data + '<br />';
+    }, false);
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+<div id="box"></div>
+<script>
+    var source = new EventSource('./server.php');
+    source.onmessage = function(e) {
+        console.log('e', JSON.parse( e.data));
+        document.getElementById('box').innerHTML += "SSE notification: " + e.data + '<br />';
+    };
+</script>
+
+</body>
+</html>

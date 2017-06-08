@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket 双向通信</title>
+    <style>
+      #boxwarp > div{
+        border: 1px solid #ccc;
+        padding:10px;
+        margin:10px;
+      }
+    </style>
+
+</head>
+<body>
+
+
+<button id="btn">发点什么</button>
+<div id="boxwarp"></div>
+
+
+<script>
+var ws = new WebSocket("ws://127.0.0.1:2000/");
+
+document.getElementById('btn').addEventListener('click', function() {
+  ws.send('cancel_order');
+});
+
+function addbox(msg){
+  var box = document.createElement('div');
+      box.innerHTML = msg;
+  document.getElementById('boxwarp').append(box);
+}
+
+ws.onopen = function() {
+    var msg = 'ws已经联接';
+    addbox(msg);
+    ws.send(msg);
+};
+
+ws.onmessage = function (evt) {
+    console.log('evt');
+    addbox(evt.data);
+};
+
+ws.onclose = function() {
+   console.log('close');
+   addbox('服务端关闭了ws');
+};
+
+ws.onerror = function(err) {
+   addbox(err);
+};
+
+</script>
+
+</body>
+</html>

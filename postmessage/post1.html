@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        .sendbox{
+            background: #efefef;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="sendbox">
+    <button id="sendbox2">直接发送到右边iframe</button>
+    左边的iframe
+</div>
+<div id="box2">
+</div>
+<script>
+    document.getElementById('sendbox2').addEventListener('click', function(){
+        window.parent.post2.postMessage('收到来自左边ifarme的消息' + +new Date(),'*');
+    });
+    function addbox(html){
+        var item = document.createElement('div');
+        item.innerHTML = html;
+        document.getElementById('box2').append(item);
+    }
+    window.addEventListener('message',function(e){
+        if(e.data){
+            addbox(e.data);
+        }
+    },false);
+</script>
+
+</body>
+</html>

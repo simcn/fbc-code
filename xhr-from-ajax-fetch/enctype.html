@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>enctype</title>
+    <style>
+        .box{border: 1px solid #ccc;padding:20px;}
+        .out{background: #efefef; padding:10px 20px; margin-top: 20px;}
+    </style>
+    <!-- <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.0.min.js"></script> -->
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.3.min.js"></script>
+    <!-- <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script> -->
+    <script>
+
+    $(function(){
+
+        $('#b1').on('click', function(){
+            $.ajax({
+                method: "POST",
+                contentType:'application/x-www-form-urlencoded;charset=UTF-8',
+                url: "form_action.php",
+                data: {username: "John", password: "Boston" }
+            }).done(function( msg ) {
+                $('#msg1').html(msg);
+            });
+        });
+
+        //
+        $('#f1').on('click', function(){
+            fetch("form_action.php", {
+                method: "POST",
+                credentials: 'include', //带上cookie
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+                },
+                body: "username=John&password=Boston"
+            })
+            .then(function(response){
+                return response.text();
+            })
+            .then(function(msg) {
+                $('#msg1').html(msg);
+
+            }, function(e) {
+                alert("Error submitting form!");
+            });
+        });
+
+
+        $('#b2').on('click', function(){
+            var formData = new FormData(document.querySelector("#data2"));
+            $.ajax({
+                method: "POST",
+                processData:false, //无需让jquery正处理一下数据
+                contentType:false, //已经是formData就默认为 multipart/form-data
+                cache: false,
+                url: "form_action.php",
+                data: formData
+            }).done(function( msg ) {
+                $('#msg2').html(msg);
+            });
+        });
+
+        $('#f2').on('click', function(){
+            var formData = new FormData(document.querySelector("#data2"));
+            fetch("form_action.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "multipart/form-data;charset=UTF-8"
+                },
+                body: formData
+            })
+            .then(function(response){
+                return response.text();
+            })
+            .then(function(msg) {
+                $('#msg2').html(msg);
+            }, function(e) {
+                alert("Error submitting form!");
+            });
+        });
+
+
+        $('#b3').on('click', function(){
+            $.ajax({
+                method: "POST",
+                contentType:'application/json;charset=UTF-8',
+                url: "form_action.php",
+                data: JSON.stringify({username: "John", password: "Boston" })
+            }).done(function( msg ) {
+                $('#msg3').html(msg);
+            });
+        });
+
+
+        $('#f3').on('click', function(){
+            var formData = new FormData(document.querySelector("#data2"));
+            fetch("form_action.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json;charset=UTF-8"
+                },
+                body: JSON.stringify({username: "John", password: "Boston" })
+            })
+            .then(function(response){
+                return response.text();
+            })
+            .then(function(msg) {
+                $('#msg3').html(msg);
+            }, function(e) {
+                alert("Error submitting form!");
+            });
+        });
+
+
+        $('#b4').on('click', function(){
+            $.ajax({
+                method: "POST",
+                contentType:'text/plain;charset=UTF-8',
+                processData:false, //无需让jquery正处理一下数据
+                url: "form_action.php",
+                data: "我是一个纯正的文本功能!\r\n我第二行"
+            }).done(function( msg ) {
+                $('#msg4').html(msg);
+            });
+        });
+
+        $('#f4').on('click', function(){
+            var formData = new FormData(document.querySelector("#data2"));
+            fetch("form_action.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "text/plain;charset=UTF-8"
+                },
+                body: "我是一个纯正的文本功能!\r\n我第二行"
+            })
+            .then(function(response){
+                return response.text();
+            })
+            .then(function(msg) {
+                $('#msg4').html(msg);
+            }, function(e) {
+                alert("Error submitting form!");
+            });
+        });
+
+        $('#b5').on('click', function(){
+            $.ajax({
+                method: "POST",
+                contentType:'text/xml;charset=UTF-8',
+                // processData:false, //无需让jquery正处理一下数据
+                url: "form_action.php",
+                data: "<doc><h1>我是标签</h1><p>我是内容</p></doc>"
+            }).done(function( msg ) {
+                $('#msg5').html(msg);
+            });
+        });
+
+        $('#f5').on('click', function(){
+            var formData = new FormData(document.querySelector("#data2"));
+            fetch("form_action.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "text/xml;charset=UTF-8"
+                },
+                body: "<doc><max>我是XML标签</max><min>我是XML内容</min></doc>"
+            })
+            .then(function(response){
+                return response.text();
+            })
+            .then(function(msg) {
+                $('#msg5').html(msg);
+            }, function(e) {
+                alert("Error submitting form!");
+            });
+        });
+
+
+    });
+    </script>
+</head>
+<body>
+
+<h1>enctype测试</h1>
+
+<h2>表单提交: application/x-www-form-urlencoded</h2>
+<div class="box">
+    <form action="form_action.php" enctype="application/x-www-form-urlencoded" method="post">
+        <p>用户: <input type="text" name="username" /></p>
+        <p>密码: <input type="text" name="password" /></p>
+        <input type="submit" value="提交" />
+        <button type="button" id="b1">AJAX提交</button>
+        <button type="button" id="f1">fetch提交</button>
+    </form>
+    <div id="msg1" class="out"></div>
+</div>
+
+<h2>multipart/form-data</h2>
+<div class="box">
+    <form id="data2" action="form_action.php" enctype="multipart/form-data" method="post">
+        <p>用户: <input type="text" name="username" /></p>
+        <p>密码: <input type="text" name="password" /></p>
+        <p>文件: <input type="file" name="file" id="file1" /></p>
+        <input type="submit" value="提交" />
+        <button type="button" id="b2">AJAX提交</button>
+        <button type="button" id="f2">fetch提交</button>
+    </form>
+    <div id="msg2" class="out"></div>
+</div>
+
+<h2>application/json</h2>
+<div class="box">
+    <form action="form_action.php" enctype="application/json" method="post">
+        <p>用户: <input type="text" name="username" /></p>
+        <p>密码: <input type="text" name="password" /></p>
+        <input type="submit" value="提交" />
+        <button type="button" id="b3">AJAX提交</button>
+        <button type="button" id="f3">fetch提交</button>
+    </form>
+    <div id="msg3" class="out"></div>
+</div>
+
+<h2>text/plain</h2>
+<div class="box">
+    <form action="form_action.php" enctype="text/plain" method="post">
+        <p>用户: <input type="text" name="username" /></p>
+        <p>密码: <input type="text" name="password" /></p>
+        <input type="submit" value="提交" />
+        <button type="button" id="b4">AJAX提交</button>
+        <button type="button" id="f4">fetch提交</button>
+    </form>
+    <div id="msg4" class="out"></div>
+</div>
+
+<h2>text/xml</h2>
+<div class="box">
+    <form action="form_action.php" enctype="text/xml" method="post">
+        <p>用户: <input type="text" name="username" /></p>
+        <p>密码: <input type="text" name="password" /></p>
+        <input type="submit" value="提交" />
+        <button type="button" id="b5">AJAX提交</button>
+        <button type="button" id="f5">fetch提交</button>
+    </form>
+    <div id="msg5" class="out"></div>
+</div>
+
+
+
+</body>
+</html>

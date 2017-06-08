@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        .box-warp > div{
+            border: 1px solid #ccc;
+            margin:10px;
+            padding:10px;
+        }
+    </style>
+</head>
+<body>
+    <button id="btn">开启一个后台线程(点击外框中止线程)</button>
+    <div class="box-warp" id="boxwarp"></div>
+
+    <script>
+    var id = 1;
+    function init_works(){
+        var warpid = 'box'+id;
+        var box = document.createElement('div');
+            box.id = warpid;
+        document.getElementById('boxwarp').append(box);
+        var worker = new Worker('./compute.js');
+        //监听后台进程发过来的消息
+        worker.onmessage= function (event) {
+            // 把子线程返回的结果添加到 div 上
+            document.getElementById(warpid).innerHTML += event.data+"<br/>";
+        };
+        //点击中止后端进程
+        box.addEventListener('click', function(){
+            worker.postMessage("oh, 我被干掉了" + warpid);
+            var time = setTimeout(function(){
+                worker.terminate();
+                clearTimeout(time);
+            },0);
+        });
+        //往后台线程发送消息
+        worker.postMessage("hi, 我是" + warpid);
+        id++;
+    }
+
+    document.getElementById('btn').addEventListener('click', function(){
+        init_works();
+    });
+
+    </script>
+
+</body>
+</html>

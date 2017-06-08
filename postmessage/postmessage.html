@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>postmessage示例</title>
+    <style>
+        html,body{height: 100%;}
+        *{padding: 0; margin:0;}
+        .warp{ display: flex; }
+        .warp > div,
+        .warp > iframe{
+            flex: 1;
+            margin:10px;
+        }
+
+        .left, .right{
+
+        }
+
+        iframe{
+            height: 600px;
+            border: 1px solid #ccc;
+        }
+
+    </style>
+</head>
+<body>
+<div class="warp">
+    <div class="left">
+        左边页面
+    </div>
+    <div class="right">
+        右边页面
+    </div>
+</div>
+<div class="warp">
+
+
+    <div class="left warp">
+        <iframe src="./post1.html" frameborder="0" id="post1" name="post1"></iframe>
+    </div>
+    <div class="right warp">
+        <iframe src="./post2.html" frameborder="0" id="post2" name="post2"></iframe>
+    </div>
+
+<!-- window.frames[0].postMessage('getcolor','http://lslib.com'); -->
+</div>
+
+<div class="warp">
+    <div class="left"><button id="postBtn1">向左边的(iframe)推送信息代码</button></div>
+    <div class="right"><button id="postBtn2">向右边的(iframe)推送信息代码</button></div>
+</div>
+
+<script>
+document.getElementById('postBtn1').addEventListener('click', function(){
+    console.log('postBtn1');
+    var date = new Date().toString();
+    window.post1.postMessage(date,'*');
+});
+document.getElementById('postBtn2').addEventListener('click', function(){
+    console.log('postBtn2');
+    var date = new Date().toString();
+    window.post2.postMessage(date,'*');
+});
+window.addEventListener('message',function(e){
+    if(e.data){
+        console.log(e.data);
+        console.log(e);
+        window.post1.postMessage(e.data,'*');
+    }
+},false);
+</script>
+</body>
+</html>
